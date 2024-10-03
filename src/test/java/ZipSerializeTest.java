@@ -10,7 +10,7 @@ public class ZipSerializeTest {
     String outputFileName = "C:\\Users\\Ball\\Desktop\\Weather_pipeline\\NYPD_Serialized.zip";
 
     @Test
-    public void testZipSerialize() throws IOException {
+    public void TestZipSerialize() throws IOException {
         ZipSerialize zipSerialize = new ZipSerialize();
         zipSerialize.serializeToZIP(testFilePath, outputFileName);
     }
