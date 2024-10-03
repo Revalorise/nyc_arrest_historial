@@ -34,6 +34,16 @@ public class BucketUtil {
         return bucketList;
     }
 
+    public boolean checkIfBucketExists(String bucketName) throws Exception {
+        ArrayList<String> bucketList = listBuckets();
+        for (String bucket : bucketList) {
+            if (bucket.equals(bucketName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void deleteBucket(String bucketName) {
         Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
         Bucket bucket = storage.get(bucketName);
