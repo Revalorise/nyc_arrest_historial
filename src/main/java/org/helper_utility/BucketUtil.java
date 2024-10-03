@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 
@@ -32,6 +33,17 @@ public class BucketUtil {
         }
 
         return bucketList;
+    }
+
+    public ArrayList<String> listBucketObjects(String bucketName) throws Exception {
+        Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+        Page<Blob> blobs = storage.list(bucketName);
+        ArrayList<String> blobList = new ArrayList<>();
+
+        for (Blob blob : blobs.iterateAll()) {
+            blobList.add(blob.getName());
+        }
+        return blobList;
     }
 
     public boolean checkIfBucketExists(String bucketName) throws Exception {
