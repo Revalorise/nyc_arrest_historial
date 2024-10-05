@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.*;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class BucketUtil {
     private final String projectId;
+    private static final Logger logger = LogManager.getLogger(BucketUtil.class);
 
     public BucketUtil(String projectId) {
         this.projectId = projectId;
@@ -17,7 +20,7 @@ public class BucketUtil {
     public void createBucket(String bucketName) throws Exception {
         Storage storage = StorageOptions.getDefaultInstance().getService();
         Bucket bucket = storage.create(BucketInfo.of(bucketName));
-        System.out.println("Bucket: " + bucket.getName() + " created.");
+        logger.info("Bucket: {} created.", bucket.getName());
     }
 
     public ArrayList<String> listBuckets() throws Exception {
@@ -63,9 +66,7 @@ public class BucketUtil {
                     );
             storage.createFrom(blobInfo, Paths.get(filePath), precondition);
 
-            System.out.println(
-                    "File" + filePath + " uploaded to bucket " + bucketName + " as " + objectName
-            );
+            logger.info("File {} uploaded to bucket {} as {}", filePath, bucketName, objectName);
         }
     }
 
@@ -84,6 +85,6 @@ public class BucketUtil {
         Bucket bucket = storage.get(bucketName);
         bucket.delete();
 
-        System.out.println("Bucket: " + bucket.getName() + " deleted.");
+        logger.info("Bucket: {} deleted.", bucket.getName());
     }
 }
