@@ -7,9 +7,10 @@ import java.util.ArrayList;
 
 final class InitializeProject {
     public static void main(String[] args) throws Exception {
-        ZipSerialize serializer = new ZipSerialize();
+        // ZipSerialize serializer = new ZipSerialize();
         BucketUtil bucketUtil =
                 new BucketUtil("gcp-data-engineering-426405");
+
         String filePath =
                 "C:\\Users\\Ball\\Desktop\\Weather_pipeline\\NYPD_Arrests_Data_Historic.csv";
         String outputFilePath
@@ -18,8 +19,9 @@ final class InitializeProject {
         String bucketName = "gcp-data-engineering-426405-nyc-crime-historic";
         String objectName = "NYPD_Arrests_Data_Historic.zip";
 
-        serializer.serializeToZIP(filePath, outputFilePath);
-        bucketUtil.createBucket(bucketName);
+        // serializer.serializeToZIP(filePath, outputFilePath);
+
+        // bucketUtil.createBucket(bucketName);
 
         assert bucketUtil.checkIfBucketExists(
                 "gcp-data-engineering-426405-nyc-crime-historic"
@@ -30,7 +32,6 @@ final class InitializeProject {
         ArrayList<String> objectList = bucketUtil.listBucketObjects(bucketName);
         assert !objectList.isEmpty();
         assert objectList.contains(objectName);
-
 
     }
 }
