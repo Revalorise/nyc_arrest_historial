@@ -11,10 +11,16 @@ import org.apache.logging.log4j.LogManager;
 
 public class BucketUtil {
     private final String projectId;
+    private String bucketName = "";
     private static final Logger logger = LogManager.getLogger(BucketUtil.class);
 
     public BucketUtil(String projectId) {
         this.projectId = projectId;
+    }
+
+    public BucketUtil(String projectId, String bucketName) {
+        this.projectId = projectId;
+        this.bucketName = bucketName;
     }
 
     public void createBucket(String bucketName) throws Exception {
@@ -52,6 +58,16 @@ public class BucketUtil {
 
     public void uploadObject(
             String bucketName, String objectName, String filePath) throws Exception {
+        initUploadObject(bucketName, objectName, filePath);
+    }
+
+    public void uploadObject(
+            String objectName, String filePath) throws Exception {
+        initUploadObject(bucketName, objectName, filePath);
+    }
+
+    private void initUploadObject(
+            String bucketName, String objectName, String filePath) throws Exception {
         Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
         BlobId blobId = BlobId.of(bucketName, objectName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
@@ -82,6 +98,26 @@ public class BucketUtil {
             }
         }
         return false;
+    }
+
+    public void downloadObject(
+            String bucketName, String objectName, String destFilePath) {
+        initDownloadObject(bucketName, objectName, destFilePath);
+    }
+
+    public void downloadObject(String objectName, String destFilePath) {
+        initDownloadObject(bucketName, objectName, destFilePath);
+    }
+
+    private void initDownloadObject(String bucketName, String objectName, String destFilePath) {
+        Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+        Blob blob = storage.get(BlobId.of(bucketName, objectName));
+        if (blob.exists()) {
+            blob.downloadTo(Paths.get(destFilePath));
+            logger.info("File {} from bucket {} downloaded to {}", objectName, bucketName, destFilePath);
+        } else {
+            logger.info("File {} not found in bucket {}", objectName, bucketName);
+        }
     }
 
     public void deleteBucket(String bucketName) {
