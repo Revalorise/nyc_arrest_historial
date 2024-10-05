@@ -90,6 +90,16 @@
             <artifactId>zip4j</artifactId>
             <version>2.11.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.13</artifactId>
+            <version>3.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.13</artifactId>
+            <version>3.5.3</version>
+        </dependency>
     </dependencies>
 
 </project>

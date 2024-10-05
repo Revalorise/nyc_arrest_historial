@@ -15,6 +15,5 @@ public class ZipSerialize {
 
         new ZipFile(outputFileName).addFile(sourceFilePath);
         logger.info("Zip file generated successfully");
-
     }
 }

@@ -1,13 +1,10 @@
 package org.helper_utility;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.google.api.gax.paging.Page;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.BucketInfo;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.*;
 
 
 public class BucketUtil {
@@ -44,6 +41,32 @@ public class BucketUtil {
             blobList.add(blob.getName());
         }
         return blobList;
+    }
+
+    public void uploadObject(String bucketName, String objectName, String filePath) throws Exception {
+        Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+        BlobId blobId = BlobId.of(bucketName, objectName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+
+        Storage.BlobWriteOption precondition;
+        if (storage.get(bucketName, objectName) == null) {
+            // For a target object that doesn't exist, set the DoesNotExist precondition.
+            // This will cause the request to fail if the object is created before the request runs.
+            precondition = Storage.BlobWriteOption.doesNotExist();
+        } else {
+            // If the destination already exists in your bucket, instead set a generation-match
+            // precondition. This will cause the request to fail if the existing object's
+            // generation changes before the request runs.
+            precondition =
+                    Storage.BlobWriteOption.generationMatch(
+                            storage.get(bucketName, objectName).getGeneration()
+                    );
+            storage.createFrom(blobInfo, Paths.get(filePath), precondition);
+
+            System.out.println(
+                    "File" + filePath + " uploaded to bucket " + bucketName + " as " + objectName
+            );
+        }
     }
 
     public boolean checkIfBucketExists(String bucketName) throws Exception {
