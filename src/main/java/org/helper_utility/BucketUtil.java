@@ -20,7 +20,7 @@ public class BucketUtil {
     public void createBucket(String bucketName) throws Exception {
         Storage storage = StorageOptions.getDefaultInstance().getService();
         if (storage.get(bucketName).exists()) {
-            logger.info("Bucket already exists: " + bucketName);
+            logger.info("Bucket already exists: {}", bucketName);
         } else {
             Bucket bucket = storage.create(BucketInfo.of(bucketName));
             logger.info("Bucket: {} created.", bucket.getName());
