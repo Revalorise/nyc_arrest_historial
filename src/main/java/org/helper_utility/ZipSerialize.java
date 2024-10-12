@@ -2,6 +2,7 @@ package org.helper_utility;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.zip.ZipException;
 
 import net.lingala.zip4j.ZipFile;
 
@@ -30,6 +31,14 @@ public class ZipSerialize {
             logger.info("Zip file deleted successfully");
         } else {
             logger.info("Zip file does not exist");
+        }
+    }
+
+    public static void unzipFile(String zipFilePath, String outputFilePath) throws IOException {
+        try (ZipFile zipFile = new ZipFile(zipFilePath)) {
+            zipFile.extractAll(outputFilePath);
+        } catch (ZipException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
