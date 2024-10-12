@@ -17,7 +17,7 @@ public class ZipSerialize {
 
         File outputFile = new File(outputFilePath);
         if (outputFile.exists()) {
-            logger.info("Zip file already exists");
+            logger.info("Zip file already exists.. skipping...");
         } else {
             new ZipFile(outputFilePath).addFile(sourceFilePath);
             logger.info("Zip file generated successfully");
@@ -35,8 +35,10 @@ public class ZipSerialize {
     }
 
     public static void unzipFile(String zipFilePath, String outputFilePath) throws IOException {
+
         try (ZipFile zipFile = new ZipFile(zipFilePath)) {
             zipFile.extractAll(outputFilePath);
+            logger.info("Zip extracted successfully");
         } catch (ZipException e) {
             System.out.println(e.getMessage());
         }

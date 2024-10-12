@@ -1,5 +1,6 @@
 package org.helper_utility;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -102,10 +103,18 @@ public class BucketUtil {
 
     public void downloadObject(
             String bucketName, String objectName, String destFilePath) {
+        File downloadFile = new File(destFilePath);
+        if (downloadFile.exists()) {
+            logger.info("File already exists... skipping...");
+        }
         initDownloadObject(bucketName, objectName, destFilePath);
     }
 
     public void downloadObject(String objectName, String destFilePath) {
+        File downloadFile = new File(destFilePath);
+        if (downloadFile.exists()) {
+            logger.info("File already exists... skipping...");
+        }
         initDownloadObject(bucketName, objectName, destFilePath);
     }
 
