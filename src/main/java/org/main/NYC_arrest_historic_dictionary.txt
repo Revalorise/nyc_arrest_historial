@@ -1,0 +1,12 @@
+[INFO]
+UP_FREQUENCY: Annually
+DESCRIPTION: List of every arrest in NYC going back to 2013 through the end of
+             the previous calendar year.
+
+[COLUMNS]
+ARREST_KEY: Randomly generated persistent ID for each arrest
+ARREST_DATE: Exact date of arrest for the reported event
+ARREST_BORO: Borough of arrest. B(Bronx), S(Staten Island), K(Brooklyn), M(Manhattan), Q(Queens)
+AGE_GROUP: Perpetrator’s age within a category
+PERP_SEX: Perpetrator’s sex description
+PERP_RACE: Perpetrator’s race description
