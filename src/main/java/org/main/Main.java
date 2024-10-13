@@ -1,5 +1,8 @@
 package org.main;
 
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.Row$;
 import org.apache.spark.sql.SparkSession;
 
 import org.helper_utility.BucketUtil;
@@ -100,16 +103,16 @@ public class Main {
                 + "GROUP BY perp_race "
                 + "ORDER BY 1 DESC;");
 
-        crimeByRace.write()
-                .format("jdbc")
-                .mode("ignore")
-                .option("url", postgresURL)
-                .option("user", username)
-                .option("password", password)
-                .option("driver", "org.postgresql.Driver")
-                .option("dbtable", "crime_by_race")
-                .save();
+        PGDatabase.writeToPostgres(
+                crimeByRace, postgresURL, username, password, "crime_by_race");
 
+        var crimeByDistrict = spark.sql("SELECT COUNT(*) as total_crimes, arrest_boro "
+                + "FROM nypd_arrest_data_historic "
+                + "GROUP BY arrest_boro "
+                + "ORDER BY 1 DESC;");
+
+        PGDatabase.writeToPostgres(
+                crimeByDistrict, postgresURL, username, password, "crime_by_district");
 
 
     }
