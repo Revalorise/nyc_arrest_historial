@@ -7,16 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class PGDatabase {
-    final static String host = "localhost";
-    final static String port = "5432";
-    final static String databaseName = "nyc_arrest_historic";
-    final static String postgresURL = DatabaseUtil.getPostgresURL(host, port, databaseName);
-    final static String username = "postgres";
-    final static String password = "Thehungryshark1";
-    static Connection conn = null;
 
+    static Connection conn;
 
-    public static void createNYCArrestTable() {
+    public static void createNYCArrestTable(String postgresURL, String username, String password) {
         try {
             conn = DatabaseUtil.getConnection(postgresURL, username, password);
 
@@ -48,7 +42,7 @@ public class PGDatabase {
         }
     }
 
-    public static void insertNYCArrestData() {
+    public static void insertNYCArrestData(String postgresURL, String username, String password) {
         try {
             conn = DatabaseUtil.getConnection(postgresURL, username, password);
 
