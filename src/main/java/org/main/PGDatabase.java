@@ -112,4 +112,27 @@ public class PGDatabase {
             DatabaseUtil.closeConnection(conn);
         }
     }
+
+    public static void applyUpdateStatement(String postgresURL, String username, String password, String SQLString) {
+        try {
+            conn = DatabaseUtil.getConnection(postgresURL, username, password);
+
+            Statement statement = null;
+            try {
+                statement = conn.createStatement();
+                statement.executeUpdate(SQLString);
+            } finally {
+                DatabaseUtil.closeStatement(statement);
+            }
+
+            DatabaseUtil.commit(conn);
+            System.out.println("statement executed");
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            DatabaseUtil.rollback(conn);
+        } finally {
+            DatabaseUtil.closeConnection(conn);
+        }
+    }
 }
