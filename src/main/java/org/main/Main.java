@@ -103,16 +103,31 @@ public class Main {
                 + "GROUP BY perp_race "
                 + "ORDER BY 1 DESC;");
 
-        PGDatabase.writeToPostgres(
-                crimeByRace, postgresURL, username, password, "crime_by_race");
-
         var crimeByDistrict = spark.sql("SELECT COUNT(*) as total_crimes, arrest_boro "
                 + "FROM nypd_arrest_data_historic "
                 + "GROUP BY arrest_boro "
                 + "ORDER BY 1 DESC;");
 
+        var crimeByAgeRange = spark.sql("SELECT COUNT(*) as total_crimes, age_group "
+                + "FROM nypd_arrest_data_historic "
+                + "GROUP BY age_group "
+                + "ORDER BY 1 DESC;");
+
+        var crimeBySex = spark.sql("SELECT COUNT(*) as total_crimes, perp_sex "
+                + "FROM nypd_arrest_data_historic "
+                + "GROUP BY perp_sex "
+                + "ORDER BY 1 DESC;");
+
+        PGDatabase.writeToPostgres(
+                crimeByRace, postgresURL, username, password, "crime_by_race");
+
         PGDatabase.writeToPostgres(
                 crimeByDistrict, postgresURL, username, password, "crime_by_district");
 
+        PGDatabase.writeToPostgres(
+                crimeByAgeRange, postgresURL, username, password, "crime_by_age_group");
+
+        PGDatabase.writeToPostgres(
+                crimeBySex, postgresURL, username, password, "crime_by_sex");
     }
 }
