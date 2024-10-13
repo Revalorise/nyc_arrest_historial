@@ -77,7 +77,7 @@ public class PGDatabase {
                 .option("user", username)
                 .option("password", password)
                 .option("driver", "org.postgresql.Driver")
-                .option("dbtable", "crime_by_race")
+                .option("dbtable", tableName)
                 .save();
     }
 

@@ -114,6 +114,5 @@ public class Main {
         PGDatabase.writeToPostgres(
                 crimeByDistrict, postgresURL, username, password, "crime_by_district");
 
-
     }
 }
