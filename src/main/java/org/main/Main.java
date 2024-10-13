@@ -85,6 +85,31 @@ public class Main {
         PGDatabase.createNYCArrestTable(postgresURL, username, password);
         PGDatabase.insertNYCArrestData(postgresURL, username, password);
 
+        var dataFrame3 = spark.read()
+                .format("jdbc")
+                .option("url", postgresURL)
+                .option("dbtable", "nypd_arrest_data_historic")
+                .option("user", username)
+                .option("password", password)
+                .option("driver", "org.postgresql.Driver")
+                .load();
+        dataFrame3.createOrReplaceTempView("nypd_arrest_data_historic");
+
+        var crimeByRace = spark.sql("SELECT COUNT(*) as total_crimes, perp_race "
+                + "FROM nypd_arrest_data_historic "
+                + "GROUP BY perp_race "
+                + "ORDER BY 1 DESC;");
+
+        crimeByRace.write()
+                .format("jdbc")
+                .mode("ignore")
+                .option("url", postgresURL)
+                .option("user", username)
+                .option("password", password)
+                .option("driver", "org.postgresql.Driver")
+                .option("dbtable", "crime_by_race")
+                .save();
+
 
 
     }
