@@ -1,12 +1,13 @@
 package org.main;
 
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 import org.helper_utility.DatabaseUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
 public class PGDatabase {
 
@@ -65,6 +66,19 @@ public class PGDatabase {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void writeToPostgres(Dataset<Row> dataframe, String postgresURL,
+                                       String username, String password, String tableName) {
+        dataframe.write()
+                .format("jdbc")
+                .mode("ignore")
+                .option("url", postgresURL)
+                .option("user", username)
+                .option("password", password)
+                .option("driver", "org.postgresql.Driver")
+                .option("dbtable", "crime_by_race")
+                .save();
     }
 
     public static void insertNYCArrestData(String postgresURL, String username, String password) {
