@@ -20,7 +20,7 @@ public class PGDatabase {
             String createTable = "CREATE TABLE IF NOT EXISTS nypd_arrest_data_historic ( "
                     + "arrest_key VARCHAR(50), "
                     + "arrest_date DATE, "
-                    + "arrest_boro CHAR, "
+                    + "arrest_boro VARCHAR(50), "
                     + "age_group VARCHAR(50), "
                     + "perp_sex VARCHAR(50), "
                     + "perp_race VARCHAR(50)"

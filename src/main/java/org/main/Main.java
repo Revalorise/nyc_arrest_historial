@@ -87,13 +87,28 @@ public class Main {
 
         PGDatabase.createNYCArrestTable(postgresURL, username, password);
         PGDatabase.insertNYCArrestData(postgresURL, username, password);
-        String cleanNYCArrestData = "UPDATE nypd_arrest_data_historic "
+
+        String cleanNYCArrestData1 = "UPDATE nypd_arrest_data_historic "
                 + "SET age_group = '0-18' "
                 + "WHERE age_group LIKE '<%';";
-        PGDatabase.applyUpdateStatement(
-                postgresURL, username, password, cleanNYCArrestData);
+        String cleanNYCArrestData2 = "UPDATE nypd_arrest_data_historic "
+                + "SET arrest_boro = "
+                + "CASE "
+                + "WHEN arrest_boro = 'B' THEN 'Bronx' "
+                + "WHEN arrest_boro = 'S' THEN 'Staten Island' "
+                + "WHEN arrest_boro = 'K' THEN 'Brooklyn' "
+                + "WHEN arrest_boro = 'M' THEN 'Manhattan' "
+                + "WHEN arrest_boro = 'Q' THEN 'Queens' "
+                + "ELSE arrest_boro "
+                + "END;";
 
-        var rawDataFrame3 = spark.read()
+        PGDatabase.applyUpdateStatement(
+                postgresURL, username, password, cleanNYCArrestData1);
+
+        PGDatabase.applyUpdateStatement(
+                postgresURL, username, password, cleanNYCArrestData2);
+
+        var dataFrame3 = spark.read()
                 .format("jdbc")
                 .option("url", postgresURL)
                 .option("dbtable", "nypd_arrest_data_historic")
@@ -101,12 +116,7 @@ public class Main {
                 .option("password", password)
                 .option("driver", "org.postgresql.Driver")
                 .load();
-        rawDataFrame3.createOrReplaceTempView("nypd_arrest_data_historic");
-
-        var crimeByRace = spark.sql("SELECT COUNT(*) as total_crimes, perp_race "
-                + "FROM nypd_arrest_data_historic "
-                + "GROUP BY perp_race "
-                + "ORDER BY 1 DESC;");
+        dataFrame3.createOrReplaceTempView("nypd_arrest_data_historic");
 
         var crimeByDistrict = spark.sql("SELECT COUNT(*) as total_crimes, arrest_boro "
                 + "FROM nypd_arrest_data_historic "
@@ -128,8 +138,11 @@ public class Main {
                 + "GROUP BY perp_sex, perp_race "
                 + "ORDER BY 1 DESC;");
 
-        PGDatabase.writeToPostgres(
-                crimeByRace, postgresURL, username, password, "crime_by_race");
+        var crimeOverTime = spark.sql("SELECT COUNT(*) as total_crimes, arrest_date "
+                + "FROM nypd_arrest_data_historic "
+                + "GROUP BY arrest_date "
+                + "ORDER BY 2 DESC;");
+
 
         PGDatabase.writeToPostgres(
                 crimeByDistrict, postgresURL, username, password, "crime_by_district");
@@ -139,6 +152,9 @@ public class Main {
 
         PGDatabase.writeToPostgres(
                 crimeByRaceAndSex, postgresURL, username, password, "crime_by_race_and_sex");
+
+        PGDatabase.writeToPostgres(
+                crimeOverTime, postgresURL, username, password, "crime_over_time");
 
     }
 }
